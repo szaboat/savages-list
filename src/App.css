@@ -1,5 +1,20 @@
+@import url('https://rsms.me/inter/inter.css');
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Gochi+Hand&display=swap');
+
+html { 
+  font-family: 'Inter', sans-serif; 
+  margin: 1em;
+}
+@supports (font-variation-settings: normal) {
+  html { 
+    font-family: 'Inter var', sans-serif; 
+  }
+}
+
+
+
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .App-logo {
@@ -13,26 +28,90 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+h1 {
+  font-size: 80px;
+  letter-spacing: -0.022em;
+  margin: 0;
+}
+
+.todo {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 20px;
+  letter-spacing: -0.014em;
+}
+
+.todo .delete {
+  display: none;
+  color: red;
+}
+
+.todo:hover {
+  background: lightyellow
+}
+
+.todo:active {
+  background: yellow 
+}
+
+.current .todo:hover .delete {
+  display: none;
+}
+
+.todo:hover .delete {
+  display: block;
+}
+
+.current .todo {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 30px;
+}
+
+.todo .done {
+  text-decoration: line-through;
+}
+
+.todo-list input {
+  border: 2px solid black;
+  width: 500px;
+  padding: 10px;
+  margin: 1em 0 2em 0;
+  font-size: 28px;
+}
+
+.container {
+  display: flex;
+  width: 1000px;
+}
+
+.item {
+  width: 300px;
+}
+
+.checkbox {
+  border: 2px solid #6b6b6b;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin: 3px 10px 0 0;
+}
+
+.checkbox:hover {
+  border: 2px solid black;
+}
+
+.item-center { 
+  flex-grow: 1;
+}
+
+.item + .item { 
+  margin-left: 2%; 
 }
