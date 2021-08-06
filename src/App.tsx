@@ -14,7 +14,23 @@ enum TodoStatus {
   TODO = "todo",
   DOING = "doing",
   DONE = "done",
+  BLOCKED = "blocked",
 }
+
+const colorize = (s: string): string => {
+  var hash = 0;
+  if (s.length === 0) return "#000";
+  for (let i = 0; i < s.length; i++) {
+    hash = s.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash;
+  }
+  var color = "#";
+  for (let i = 0; i < 3; i++) {
+    var value = (hash >> (i * 8)) & 255;
+    color += ("00" + value.toString(16)).substr(-2);
+  }
+  return color;
+};
 
 function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -51,7 +67,7 @@ function simpleUniqueId() {
 }
 
 const renderText = (s: string) => {
-  return s.replaceAll(/#\S+/g, "<span class='tag'>$&</span>");
+  return s.replaceAll(/#\S+/g, `<span class='tag'>$&</span>`);
 };
 
 function TodoItem({
@@ -90,8 +106,31 @@ function TodoItem({
             }}
           ></span>
         );
+      case TodoStatus.BLOCKED:
+        return (
+          <span
+            className="checkbox"
+            style={{
+              background: "red",
+              fontSize: "12px",
+              color: "#fff",
+              borderColor: "red",
+            }}
+          >
+            !!!!
+          </span>
+        );
       default:
         return "☐";
+    }
+  };
+
+  const getTag = (text: string) => {
+    const match = text.match(/#\S+/);
+    if (match) {
+      return match[0].replace("#", "");
+    } else {
+      return "";
     }
   };
 
@@ -106,7 +145,11 @@ function TodoItem({
           {showActions ? renderStatus(todo) : null}
         </span>
 
-        <span className={todo.status === TodoStatus.DONE ? "done" : ""}>
+        <span
+          className={
+            todo.status === TodoStatus.DONE ? "done " : " " + getTag(todo.text)
+          }
+        >
           {ReactHtmlParser(renderText(todo.text))}
         </span>
       </div>
@@ -155,7 +198,7 @@ function TodoForm({
 function App() {
   const [todos, setTodos] = useLocalStorage("todos", [
     {
-      text: "Learn about React",
+      text: "Add your first TODO",
       status: TodoStatus.TODO,
       id: simpleUniqueId(),
       duration: 0,
@@ -184,6 +227,8 @@ function App() {
         return TodoStatus.DOING;
       } else if (status === TodoStatus.DOING) {
         return TodoStatus.DONE;
+      } else if (status === TodoStatus.DONE) {
+        return TodoStatus.BLOCKED;
       } else {
         return TodoStatus.TODO;
       }
@@ -195,6 +240,7 @@ function App() {
   };
 
   const currentTodos = todos.filter((t) => t.status === TodoStatus.DOING);
+  const blockedTodos = todos.filter((t) => t.status === TodoStatus.BLOCKED);
 
   return (
     <div className="app">
@@ -214,22 +260,47 @@ function App() {
         </ReactSortable>
       </div>
 
-      <div
-        className="current"
-        style={{ backgroundColor: "lightyellow", padding: "10px" }}
-      >
-        <h2>Current focus</h2>
-        {currentTodos.map((todo, index) => (
-          <TodoItem
-            key={index}
-            showActions={false}
-            index={index}
-            todo={todo}
-            onUpdate={() => {}}
-            onDelete={() => {}}
-          />
-        ))}
-      </div>
+      {currentTodos.length > 0 ? (
+        <div
+          className="current"
+          style={{ backgroundColor: "lightyellow", padding: "10px" }}
+        >
+          <h2>
+            In progress{" "}
+            <span style={{ fontFamily: "monospace", float: "right" }}>
+              duration: 12:42
+            </span>
+          </h2>
+          {currentTodos.map((todo, index) => (
+            <TodoItem
+              key={index}
+              showActions={false}
+              index={index}
+              todo={todo}
+              onUpdate={() => {}}
+              onDelete={() => {}}
+            />
+          ))}
+        </div>
+      ) : null}
+      {blockedTodos.length > 0 ? (
+        <div
+          className="blocked"
+          style={{ backgroundColor: "red", padding: "10px" }}
+        >
+          <h2>Blocked</h2>
+          {blockedTodos.map((todo, index) => (
+            <TodoItem
+              key={index}
+              showActions={false}
+              index={index}
+              todo={todo}
+              onUpdate={() => {}}
+              onDelete={() => {}}
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

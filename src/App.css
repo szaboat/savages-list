@@ -11,8 +11,6 @@ html {
   }
 }
 
-
-
 .App {
   /* text-align: center; */
 }
@@ -90,7 +88,7 @@ h1 {
 
 .container {
   display: flex;
-  width: 1000px;
+  width: 800px;
 }
 
 .item {
@@ -111,8 +109,19 @@ h1 {
   height: 14px;
 }
 
-.tag {
+.kitchen span.tag {
   background: #FFEE58;
+}
+
+.rivet span.tag {
+  background: lightcoral;
+}
+
+.done {
+  text-decoration: line-through;
+}
+
+.tag {
   border-radius: 5px;
 }
 
