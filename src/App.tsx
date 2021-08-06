@@ -17,6 +17,7 @@ enum TodoStatus {
   BLOCKED = "blocked",
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const colorize = (s: string): string => {
   var hash = 0;
   if (s.length === 0) return "#000";
