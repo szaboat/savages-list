@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import ReactHtmlParser from "react-html-parser";
 import "./App.css";
 import { ReactSortable } from "react-sortablejs";
-import ContentEditable from "react-contenteditable";
 
 type Todo = {
   id: string;
   text: string;
   status: TodoStatus;
+  duration: number;
 };
 
 enum TodoStatus {
@@ -48,6 +49,10 @@ function simpleUniqueId() {
     [gen4(), gen4(), gen4(), gen4(), gen4(), gen4(), gen4(), gen4()].join("")
   );
 }
+
+const renderText = (s: string) => {
+  return s.replaceAll(/#\S+/g, "<span class='tag'>$&</span>");
+};
 
 function TodoItem({
   todo,
@@ -102,7 +107,7 @@ function TodoItem({
         </span>
 
         <span className={todo.status === TodoStatus.DONE ? "done" : ""}>
-          {todo.text}
+          {ReactHtmlParser(renderText(todo.text))}
         </span>
       </div>
 
@@ -153,13 +158,14 @@ function App() {
       text: "Learn about React",
       status: TodoStatus.TODO,
       id: simpleUniqueId(),
+      duration: 0,
     },
   ]);
 
   const addTodo = (text: string) => {
     const newTodos = [
+      { text, status: TodoStatus.TODO, id: simpleUniqueId(), duration: 0 },
       ...todos,
-      { text, status: TodoStatus.TODO, id: simpleUniqueId() },
     ];
     setTodos(newTodos);
   };
@@ -193,22 +199,6 @@ function App() {
   return (
     <div className="app">
       <div className="todo-list">
-        <div
-          className="current"
-          style={{ backgroundColor: "lightyellow", padding: "10px" }}
-        >
-          <h2>Current focus</h2>
-          {currentTodos.map((todo, index) => (
-            <TodoItem
-              key={index}
-              showActions={false}
-              index={index}
-              todo={todo}
-              onUpdate={() => {}}
-              onDelete={() => {}}
-            />
-          ))}
-        </div>
         <TodoForm addTodo={addTodo} />
         <ReactSortable list={todos} setList={setTodos}>
           {todos.map((todo, index) => (
@@ -222,6 +212,23 @@ function App() {
             />
           ))}
         </ReactSortable>
+      </div>
+
+      <div
+        className="current"
+        style={{ backgroundColor: "lightyellow", padding: "10px" }}
+      >
+        <h2>Current focus</h2>
+        {currentTodos.map((todo, index) => (
+          <TodoItem
+            key={index}
+            showActions={false}
+            index={index}
+            todo={todo}
+            onUpdate={() => {}}
+            onDelete={() => {}}
+          />
+        ))}
       </div>
     </div>
   );
