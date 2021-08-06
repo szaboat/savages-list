@@ -266,12 +266,7 @@ function App() {
           className="current"
           style={{ backgroundColor: "lightyellow", padding: "10px" }}
         >
-          <h2>
-            In progress{" "}
-            <span style={{ fontFamily: "monospace", float: "right" }}>
-              duration: 12:42
-            </span>
-          </h2>
+          <h2>In progress</h2>
           {currentTodos.map((todo, index) => (
             <TodoItem
               key={index}
